@@ -350,7 +350,7 @@
     storageKey: 'rize-finan4-u10-risk-v1', filePrefix: 'RiskDesk',
     verifyUrl: 'https://rizecomputerscience.github.io/finan4-risk-desk/verify.html',
     calcPlaceholder: '4.9+1.3*4.2',
-    calcHint: 'Type or tap. Use * to multiply and / to divide, so 4.9+1.3*4.2 is the worked example’s required return in percent and 110/1.12 is a price today.',
+    calcHint: 'Type or tap. Use * to multiply and / to divide, so 4.9+1.3*4.2 is the required return in percent for a stock with β = 1.3 and 110/1.12 is a price today.',
     story: { title: 'The Risk Desk', kicker: 'Corporate Finance, Unit 10', company: 'Fallowfield Advisors', team: 'Research Team',
       from: 'Ingrid Sowande', fromTitle: 'portfolio manager, Fallowfield Advisors',
       dek: 'You have joined the research team at Fallowfield Advisors, a small firm that invests savings for families. Ingrid Sowande, a portfolio manager, wants you ready to explain to clients why some stocks have to promise more than others.',
