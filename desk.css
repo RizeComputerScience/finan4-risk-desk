@@ -131,7 +131,7 @@ footer{max-width:820px;margin:0 auto;padding:0 1.1rem 3rem;font-size:14px;color:
 #nextRow{display:none}
 .practice-banner{background:var(--hint-tint);border-left:4px solid var(--hint);padding:.6rem .9rem;border-radius:6px;margin:0 0 1rem}
 /* opt-in blocks (2026-11-05): parts, autosave, worked example, sources */
-.part{min-width:0}
+.part,.ask>*{min-width:0}
 .part>p:first-child{margin-top:0}
 .part>.field,.part>fieldset,.part>.tw{margin-top:.6rem}
 .part+.part{border-top:1px solid var(--line);padding-top:1rem}
