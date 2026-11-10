@@ -272,9 +272,9 @@
       : `Recall: ${m(t.one1)} and ${m(t.ten1)}. Recession: every stock falls ${pc(t.d2, 0)}, so both portfolios lose ${m(t.A)} × ${pc(t.d2, 0)} = ${m(t.one2)}. Ten stocks protected the client from the recall only.`;
     if (t.id === 't2') return lvl === 1 ? `DraftKings: ${BD.toFixed(2)} × ${spc(t.mv, 0)} = ${spc(t.dk, 2)}. Con Edison: ${BC.toFixed(2)} × ${spc(t.mv, 0)} = ${spc(t.ce, 2)}.`
       : `Moves: ${spc(t.dk, 2)} and ${spc(t.ce, 2)}. Dollars: ${m(t.H)} × ${spc(t.dk, 2)} = ${sgn(t.dkD)}, and ${m(t.H)} × ${spc(t.ce, 2)} = ${sgn(t.ceD)}.`;
-    if (t.id === 't3') return lvl === 1 ? `DraftKings: ${BD.toFixed(2)} × ${pc(ERP)} = ${pc(t.dkP, 2)}. Required return = ${pc(RF)} + ${pc(t.dkP, 2)} = ${pc(t.dk, 2)}. In the calculator: <code>4.9+1.61*4.2</code>.`
+    if (t.id === 't3') return lvl === 1 ? `DraftKings: ${BD.toFixed(2)} × ${pc(ERP)} = ${pc(t.dkP, 2)}. Required return = ${pc(RF)} + ${pc(t.dkP, 2)} = ${pc(t.dk, 2)}. In Desmos: <code>4.9+1.61*4.2</code>.`
       : `DraftKings: ${pc(t.dkP, 2)} and ${pc(t.dk, 2)}. Con Edison: ${BC.toFixed(2)} × ${pc(ERP)} = ${pc(t.ceP, 2)}, so ${pc(RF)} + ${pc(t.ceP, 2)} = ${pc(t.ce, 2)}.`;
-    if (t.id === 't4') return lvl === 1 ? `DraftKings: ${m(t.X)} ÷ ${(1 + RD1).toFixed(3)} = ${m(t.pD, 2)}. In the calculator: <code>${t.X}/1.117</code>.`
+    if (t.id === 't4') return lvl === 1 ? `DraftKings: ${m(t.X)} ÷ ${(1 + RD1).toFixed(3)} = ${m(t.pD, 2)}. In Desmos: <code>${t.X}/1.117</code>.`
       : `DraftKings ${m(t.pD, 2)}; Con Edison ${m(t.X)} ÷ ${(1 + RC1).toFixed(3)} = ${m(t.pC, 2)}. The DraftKings buyer pays less for the same ${m(t.X)}, so that buyer earns more.`;
   }
 
