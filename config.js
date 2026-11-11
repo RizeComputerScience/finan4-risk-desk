@@ -55,14 +55,12 @@
   const STEPS = [
     { id: 'w1', label: 'Coin flip warm-up', kind: 'task' },
     { id: 'w2', label: 'Summer job warm-up', kind: 'task' },
-    { id: 'walk', label: 'What most people say', kind: 'walk' },
     { id: 't1', label: 'Recall or recession', kind: 'task' },
     { id: 'q1', label: 'Check 1', kind: 'check', quiz: 0 },
     { id: 't2', label: 'How jumpy?', kind: 'task' },
     { id: 'q2', label: 'Check 2', kind: 'check', quiz: 1 },
     { id: 't3', label: 'Required returns', kind: 'task' },
     { id: 'q3', label: 'Check 3', kind: 'check', quiz: 2 },
-    { id: 't4', label: 'Price today', kind: 'task' },
     { id: 'q4', label: 'Exam-style question', kind: 'check', quiz: 3 },
     { id: 'note', label: 'Your note', kind: 'note' },
   ];
@@ -77,7 +75,6 @@
     T.push({ id: 't2', mv, H, dk: BD * mv, ce: BC * mv, dkD: H * BD * mv, ceD: H * BC * mv });
     T.push({ id: 't3', dkP: BD * ERP, dk: RD, ceP: BC * ERP, ce: RC });
     const X = h.between(rng, 60, 150, 5);
-    T.push({ id: 't4', X, pD: X / (1 + RD1), pC: X / (1 + RC1), decision: 'dk' });
     return T;
   }
 
@@ -126,6 +123,12 @@
     });
   }
 
+  // Worked examples drawn as the same tables the student fills (interactive-assignments rule 29, 2026-11-11).
+  const lossTable = (cap, d1, d2, v) => `<div class="tw"><table class="cf ladder filled"><caption>${cap}</caption><thead><tr><th scope="col" style="text-align:left">Bad news</th><th scope="col">One stock</th><th scope="col">Ten stocks</th></tr></thead><tbody>
+    <tr><td class="lbl">One company’s problem (it falls ${d1}%)</td><td><b>${v[0]}</b></td><td><b>${v[1]}</b></td></tr>
+    <tr><td class="lbl">A recession (every stock falls ${d2}%)</td><td><b>${v[2]}</b></td><td><b>${v[3]}</b></td></tr></tbody></table></div><p>One stock loses $5,000 × 30% = $1,500. Ten stocks lose only the $500 in that company: $500 × 30% = $150. In the recession all $5,000 falls 15% either way.</p>`;
+  const twoCol = (cap, rows) => `<div class="tw"><table class="cf ladder filled"><caption>${cap}</caption><thead><tr><th scope="col" style="text-align:left">Line</th><th scope="col">Stock A (β 1.5)</th><th scope="col">Stock B (β 0.5)</th></tr></thead><tbody>${rows.map((r) => `<tr><td class="lbl">${r[0]}</td><td><b>${r[1]}</b></td><td><b>${r[2]}</b></td></tr>`).join('')}</tbody></table></div>`;
+
   function taskView(t, L, h) {
     if (t.id === 'w1') return { title: 'Warm-up: a coin flip', place: 'No right answers here. Ingrid wants to know how you feel about risk.',
       noCalc: true, autosave: true, wire: wireCoin,
@@ -141,17 +144,10 @@
       noCalc: true, autosave: true,
       value: { label: 'How much an hour would the roofing job have to pay before you would take it over the store job?', placeholder: '$0', help: '' },
       sources: '<p>Wages: Bureau of Labor Statistics, Occupational Employment and Wage Statistics, May 2025 (median hourly wage). Deaths on the job: Bureau of Labor Statistics, Census of Fatal Occupational Injuries, 2024.</p>' };
-    if (t.id === 't1') return { title: 'One stock or ten: a recall and a recession', place: 'A new client has ' + m(t.A) + ' to invest. She wants to put all of it into one company she likes, a maker of children’s car seats.',
-      body: `<p>Ingrid shows her two ways the money could go:</p>
-        <ul><li><b>One stock:</b> all ${m(t.A)} in the car-seat maker.</li><li><b>Ten stocks:</b> ${m(t.A / N)} in each of ten companies, one of them the car-seat maker.</li></ul>
-        <p>Then two kinds of bad news:</p>
-        <ul><li><b>A recall.</b> A faulty buckle forces a recall. The car-seat maker’s stock falls <b>${pc(t.d1, 0)}</b>. The other nine companies are not affected.</li>
-        <li><b>A recession.</b> People spend less, so nearly every company sells less. All ten stocks fall <b>${pc(t.d2, 0)}</b>.</li></ul>`,
-      example: `<p>$5,000 split over ten stocks is $500 in each.</p>
-        <p>One company’s stock falls 30%. One stock loses $5,000 × 30% = $1,500.</p>
-        <p>Ten stocks lose only the $500 in that company: $500 × 30% = $150.</p>
-        <p>Every stock falls 15%. Both lose $5,000 × 15% = $750.</p>`,
-      table: `<div class="tw"><table class="cf"><caption>Dollars the client loses</caption><thead><tr><th scope="col" style="text-align:left">Bad news</th><th scope="col">One stock</th><th scope="col">Ten stocks</th></tr></thead><tbody>
+    if (t.id === 't1') return { title: 'Does spreading out protect her?', place: `A client wants to put all ${m(t.A)} into one stock, a maker of children’s car seats. Ingrid compares that with ${m(t.A / N)} in each of ten stocks.`,
+      body: `<p>Fill in what each choice loses in two kinds of bad news, then say which one the ten stocks protected her from.</p>`,
+      example: lossTable('$5,000 over ten stocks: one company falls 30%, then every stock falls 15%', 30, 15, ['$1,500', '$150', '$750', '$750']),
+      table: `<div class="tw"><table class="cf"><caption>Your turn: dollars the client loses</caption><thead><tr><th scope="col" style="text-align:left">Bad news</th><th scope="col">One stock</th><th scope="col">Ten stocks</th></tr></thead><tbody>
         <tr><td class="lbl">The recall (car-seat maker falls ${pc(t.d1, 0)})</td><td>${cell(L, 1, 'Recall loss with one stock')}</td><td>${cell(L, 2, 'Recall loss with ten stocks')}</td></tr>
         <tr><td class="lbl">The recession (every stock falls ${pc(t.d2, 0)})</td><td>${cell(L, 3, 'Recession loss with one stock')}</td><td>${cell(L, 4, 'Recession loss with ten stocks')}</td></tr></tbody></table></div>`,
       choice: { legend: 'Owning ten stocks protected the client from', options: [['recall', 'The recall only'], ['recession', 'The recession only'], ['both', 'Both'], ['neither', 'Neither']] },
@@ -159,12 +155,10 @@
     if (t.id === 't2') {
       const dir = t.mv < 0 ? 'falls' : 'rises';
       return { title: 'How jumpy is each stock?', place: `The client also owns ${m(t.H)} of DraftKings, the sports-betting company, and ${m(t.H)} of Con Edison, New York City’s electric company.`,
-        body: `<p>A stock’s <b>beta (β)</b> measures how volatile it is next to the market. With β = 1 a stock tends to move as much as the market. With β = 2 it tends to move twice as much, and with β = 0.5 half as much.</p>
-          <p class="formula">stock’s move = β × market move</p>`,
-        example: `<p>The market falls 4%. A stock with β = 1.5 tends to move 1.5 × −4% = −6%.</p>
-          <p>On $3,000 that is $3,000 × −6% = −$180.</p>`,
+        body: `<p>The market <b>${dir} ${pc(Math.abs(t.mv), 0)}</b> next month. How much does each stock move, and what happens to the client’s ${m(t.H)} in each?</p>`,
+        example: twoCol('If the market falls 4%, on $3,000 in each', [['The stock’s move (β × market move), %', '1.5 × −4% = −6%', '0.5 × −4% = −2%'], ['Change in the $3,000, dollars', '$3,000 × −6% = −$180', '$3,000 × −2% = −$60']]),
         parts: [{ html: `${tbl('Betas, November 2026', ['Stock', 'β'], [{ c: ['DraftKings', BD.toFixed(2)] }, { c: ['Con Edison', BC.toFixed(2)] }])}
-          <p>Now the market <b>${dir} ${pc(Math.abs(t.mv), 0)}</b> next month. Fill in each stock’s move and the change in the client’s ${m(t.H)}.</p>`, field: 'table' }],
+          `, field: 'table' }],
         table: `<div class="tw"><table class="cf"><caption>If the market ${dir} ${pc(Math.abs(t.mv), 0)}</caption><thead><tr><th scope="col" style="text-align:left">Line</th><th scope="col">DraftKings</th><th scope="col">Con Edison</th></tr></thead><tbody>
           <tr><td class="lbl">The stock’s move (β × market move), %</td><td>${cell(L, 1, 'DraftKings move in percent')}</td><td>${cell(L, 2, 'Con Edison move in percent')}</td></tr>
           <tr><td class="lbl">Change in the client’s ${m(t.H)}, dollars</td><td>${cell(L, 3, 'DraftKings change in dollars')}</td><td>${cell(L, 4, 'Con Edison change in dollars')}</td></tr></tbody></table></div>
@@ -173,14 +167,9 @@
         helpLabels: ['Show me the percentages', 'Show me every cell'] };
     }
     if (t.id === 't3') return { title: 'The required return for each stock', place: 'The client asks what return she should expect from each stock for the risk she is taking.',
-      body: `<p>The <b>required return</b> is the return investors need to expect before they will hold a stock.</p>
-        <p class="formula">required return = Treasury yield + β × market premium</p>
-        <ul><li>The <b>Treasury yield</b> is what the US government pays to borrow for 10 years, the safest return available.</li>
-        <li>The <b>market premium</b> is the extra return investors expect for owning the whole stock market instead.</li></ul>`,
-      example: `<p>Treasury yield 3%, β = 1.5, market premium 6%.</p>
-        <p>β × market premium = 1.5 × 6% = 9%.</p>
-        <p>Required return = 3% + 9% = 12%.</p>`,
-      parts: [{ html: '<p>Now the real numbers for November 2026. Type each answer as a percentage.</p>', field: 'table' }],
+      body: '<p>Fill in each stock’s required return from the November 2026 numbers in the table. Type each answer as a percentage.</p>',
+      example: twoCol('Treasury yield 3%, market premium 6%', [['β × market premium', '1.5 × 6% = 9%', '0.5 × 6% = 3%'], ['Required return (Treasury yield + β × market premium)', '3% + 9% = 12%', '3% + 3% = 6%']]),
+      parts: [{ html: '', field: 'table' }],
       table: `<div class="tw"><table class="cf"><caption>Required returns, November 2026</caption><thead><tr><th scope="col" style="text-align:left">Line</th><th scope="col">DraftKings</th><th scope="col">Con Edison</th></tr></thead><tbody>
         <tr><td class="lbl">Treasury yield, 10 years</td><td>${pc(RF)}</td><td>${pc(RF)}</td></tr>
         <tr><td class="lbl">β</td><td>${BD.toFixed(2)}</td><td>${BC.toFixed(2)}</td></tr>
@@ -331,7 +320,7 @@
         [{ c: ['A steady stock', '6%', '$110 ÷ 1.06 = $103.77'] }, { c: ['A jumpy stock', '12%', '$110 ÷ 1.12 = $98.21'], cls: 'reveal' }]);
       if (stage === 3) return tbl('If the market falls 10%', ['β', 'The stock tends to move', 'A stock like this'],
         [{ c: ['0.5', '0.5 × −10% = −5%', 'A steady business, like a utility'] }, { c: ['1.0', '1.0 × −10% = −10%', 'The market itself'] }, { c: ['1.3', '1.3 × −10% = −13%', 'A business whose sales swing with the economy'], cls: 'reveal' }], [0, 2]);
-      return tbl('The required return for a stock with β = 1.3', ['Line', 'A stock with β = 1.3'],
+      return tbl('The required return for a stock with β = 1.3.', ['Line', 'A stock with β = 1.3'],
         [{ c: ['Treasury yield, 10 years', '4.9%'] }, { c: ['β', '1.3'] }, { c: ['Market premium', '4.2%'] }, { c: ['β × market premium', '1.3 × 4.2% = 5.46%'] }, { c: ['<b>Required return</b> (Treasury yield + β × market premium)', '4.9% + 5.46% = <b>10.36%</b>'], cls: 'total hl' }]);
     },
     stages: [
@@ -346,16 +335,16 @@
 
   root.DESK = {
     practiceStart: 't1',
-    app: 'finan4-u10-risk-desk', version: 2, seedVersion: 2, salt: 'rize-finan4-u10-risk:4c81d2', points: 20,
-    storageKey: 'rize-finan4-u10-risk-v1', filePrefix: 'RiskDesk',
+    app: 'finan4-u10-risk-desk', version: 3, seedVersion: 3, salt: 'rize-finan4-u10-risk:4c81d2', points: 20,
+    storageKey: 'rize-finan4-u10-risk-v3', filePrefix: 'RiskDesk',
     verifyUrl: 'https://rizecomputerscience.github.io/finan4-risk-desk/verify.html',
     calcPlaceholder: '4.9+1.3*4.2',
-    calcHint: 'Type or tap. Use * to multiply and / to divide, so 4.9+1.3*4.2 is the required return in percent for a stock with β = 1.3 and 110/1.12 is a price today.',
+    calcHint: 'Use * to multiply, so 4.9+1.3*4.2 is the required return in percent for a stock with β = 1.3',
     story: { title: 'The Risk Desk', kicker: 'Corporate Finance, Unit 10', company: 'Fallowfield Advisors', team: 'Research Team',
       from: 'Ingrid Sowande', fromTitle: 'portfolio manager, Fallowfield Advisors',
       dek: 'You have joined the research team at Fallowfield Advisors, a small firm that invests savings for families. Ingrid Sowande, a portfolio manager, wants you ready to explain to clients why some stocks have to promise more than others.',
-      whatBox: '<b>People need paying to accept risk.</b> A stock whose price jumps around more than the market has to sell for less, so its buyers can expect to earn more. Beta (β) measures how volatile a stock is, and one formula turns β into the return investors require.',
-      stepsLine: 'There are twelve steps: two warm-up questions with no right answers, a look at what most people answer, four problems with three one-question checks between them, one exam-style question, and a short note to Ingrid.' },
+      whatBox: '',
+      stepsLine: 'Ten short steps: two warm-ups with no right answers, three problems with a one-question check after each, one exam-style question, and a note to Ingrid. Each problem shows a worked example in the same table you fill in.' },
     steps: STEPS, quiz: QUIZ, walk: WALK, buildTasks, taskView, judgeTask, helpText, praise, selfAnswer, selfWrong,
     note: { title: 'A note for the client', label: 'Your note to Ingrid', minWords: 30, receiptHeading: 'Note to the portfolio manager',
       prompt: 'The client asks why anyone would buy Con Edison when DraftKings is expected to earn about twice as much. Answer her in plain words. Use the two betas, say what a DraftKings buyer is being paid for, and connect it to one of your warm-up answers.' },
