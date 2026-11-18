@@ -8,7 +8,11 @@
    is valid) and `parts` (each question's field sits under that question). Their judge accepts any sensible entry, records it on the
    receipt, and the praise shows what research found. The coin on the first warm-up flips for feel only: flips are not graded or recorded.
    Rework 2026-11-05 (Samuel's review, design/course-principles.md): round seeds, ten stocks not twenty, worked examples, β, sources
-   folded away, tolerance sentences removed. seedVersion and version moved to 2, so saved progress and receipts from v1 do not carry over. */
+   folded away, tolerance sentences removed. seedVersion and version moved to 2, so saved progress and receipts from v1 do not carry over.
+   2026-11-18 (Audrey's peer review, design/AUDREY-REVIEW-BRIEF-2026-11-18.md): one check on diversification added after Check 1 (eleven
+   steps), and the industry names (diversification, systematic and unsystematic risk, beta, CAPM, risk-free rate, market risk premium)
+   used in titles, labels and feedback. version 3 -> 4 because the step list changed; seedVersion and storageKey unchanged, so every
+   student's numbers and saved progress carry over. The v3 config is in v3-archive/. */
 (function (root) {
   'use strict';
   const RF = 0.049, ERP = 0.042, BD = 1.61, BC = 0.22;            // real inputs, see header
@@ -18,14 +22,22 @@
   const N = 10;                                                   // stocks in the spread-out portfolio (the reading uses $10,000 over ten)
 
   const QUIZ = [
-    { title: 'Quick win: which bad news can you spread out?',
+    { title: 'Quick win: which risk does diversification shrink?',
       q: 'Ingrid’s client owns stock in ten different companies. Which of these is bad news that owning ten stocks protects the client from?',
       options: ['A fire that shuts one company’s main factory', 'A recession', 'A rise in interest rates across the whole economy', 'A jump in oil prices that raises nearly every company’s costs'],
       answer: 0,
-      why: ['Right. A factory fire hits one company. With the money spread over ten, only one tenth of it is in that company.',
-        'A recession hits nearly every company at once, so all ten stocks tend to fall together. Owning more of them does not help.',
-        'Higher interest rates affect nearly every company at once, so all ten stocks tend to move together.',
-        'A jump in oil prices raises costs for nearly every company at once, so owning ten of them does not spread it out.'] },
+      why: ['Right. A factory fire hits one company, so it is unsystematic risk. With the money spread over ten, only one tenth of it is in that company.',
+        'A recession is systematic risk. It hits nearly every company at once, so all ten stocks tend to fall together, and owning more of them does not help.',
+        'Higher interest rates are systematic risk. They affect nearly every company at once, so all ten stocks tend to move together.',
+        'A jump in oil prices is systematic risk. It raises costs for nearly every company at once, so owning ten stocks does not spread it out.'] },
+    { title: 'Quick win: fifty stocks instead of ten',
+      q: 'The client spreads the same money over fifty stocks instead of ten. What does the extra diversification do?',
+      options: ['It shrinks the loss from one company’s bad news and leaves the loss in a recession about the same', 'It shrinks the loss in a recession as well', 'It removes all the risk from her portfolio', 'It raises the loss from one company’s bad news, because she owns more companies'],
+      answer: 0,
+      why: ['Right. Each company now holds a fiftieth of the money, so one company’s problem (unsystematic risk) costs even less. A recession (systematic risk) still hits nearly every stock at once.',
+        'A recession is systematic risk. Nearly every stock falls together, so fifty stocks fall about as far as ten. Diversification shrinks only unsystematic, company-specific risk.',
+        'Diversification shrinks unsystematic risk toward nothing. Systematic risk stays: in a recession nearly all fifty stocks fall together.',
+        'Owning more companies puts less money in each one. One company’s problem now touches only a fiftieth of the money, so the loss shrinks.'] },
     { title: 'Quick win: reading a beta',
       q: 'Con Edison’s beta (β) is 0.22. What does that tell you?',
       options: ['Its price tends to move much less than the market', 'It loses money 22% of the time', 'It earns a return of 22% a year', 'It tends to move 22% more than the market'],
@@ -55,13 +67,14 @@
   const STEPS = [
     { id: 'w1', label: 'Coin flip warm-up', kind: 'task' },
     { id: 'w2', label: 'Summer job warm-up', kind: 'task' },
-    { id: 't1', label: 'Recall or recession', kind: 'task' },
+    { id: 't1', label: 'Diversification', kind: 'task' },
     { id: 'q1', label: 'Check 1', kind: 'check', quiz: 0 },
-    { id: 't2', label: 'How jumpy?', kind: 'task' },
-    { id: 'q2', label: 'Check 2', kind: 'check', quiz: 1 },
-    { id: 't3', label: 'Required returns', kind: 'task' },
-    { id: 'q3', label: 'Check 3', kind: 'check', quiz: 2 },
-    { id: 'q4', label: 'Exam-style question', kind: 'check', quiz: 3 },
+    { id: 'q1b', label: 'Check 2', kind: 'check', quiz: 1 },
+    { id: 't2', label: 'Beta (β)', kind: 'task' },
+    { id: 'q2', label: 'Check 3', kind: 'check', quiz: 2 },
+    { id: 't3', label: 'The CAPM', kind: 'task' },
+    { id: 'q3', label: 'Check 4', kind: 'check', quiz: 3 },
+    { id: 'q4', label: 'Exam-style question', kind: 'check', quiz: 4 },
     { id: 'note', label: 'Your note', kind: 'note' },
   ];
 
@@ -144,8 +157,8 @@
       noCalc: true, autosave: true,
       value: { label: 'How much an hour would the roofing job have to pay before you would take it over the store job?', placeholder: '$0', help: '' },
       sources: '<p>Wages: Bureau of Labor Statistics, Occupational Employment and Wage Statistics, May 2025 (median hourly wage). Deaths on the job: Bureau of Labor Statistics, Census of Fatal Occupational Injuries, 2024.</p>' };
-    if (t.id === 't1') return { title: 'Does spreading out protect her?', place: `A client wants to put all ${m(t.A)} into one stock, a maker of children’s car seats. Ingrid compares that with ${m(t.A / N)} in each of ten stocks.`,
-      body: `<p>Fill in what each choice loses in two kinds of bad news, then say which one the ten stocks protected her from.</p>`,
+    if (t.id === 't1') return { title: 'Does diversification protect her?', place: `A client wants to put all ${m(t.A)} into one stock, a maker of children’s car seats. Ingrid compares that with ${m(t.A / N)} in each of ten stocks.`,
+      body: `<p>Fill in what each choice loses in two kinds of bad news: one company’s problem (unsystematic risk) and a recession (systematic risk). Then say which one the ten stocks protected her from.</p>`,
       example: lossTable('$5,000 over ten stocks: one company falls 30%, then every stock falls 15%', 30, 15, ['$1,500', '$150', '$750', '$750']),
       table: `<div class="tw"><table class="cf"><caption>Your turn: dollars the client loses</caption><thead><tr><th scope="col" style="text-align:left">Bad news</th><th scope="col">One stock</th><th scope="col">Ten stocks</th></tr></thead><tbody>
         <tr><td class="lbl">The recall (car-seat maker falls ${pc(t.d1, 0)})</td><td>${cell(L, 1, 'Recall loss with one stock')}</td><td>${cell(L, 2, 'Recall loss with ten stocks')}</td></tr>
@@ -154,7 +167,7 @@
       helpLabels: ['Show me the recall row', 'Show me both rows'] };
     if (t.id === 't2') {
       const dir = t.mv < 0 ? 'falls' : 'rises';
-      return { title: 'How jumpy is each stock?', place: `The client also owns ${m(t.H)} of DraftKings, the sports-betting company, and ${m(t.H)} of Con Edison, New York City’s electric company.`,
+      return { title: 'Beta: how far each stock moves with the market', place: `The client also owns ${m(t.H)} of DraftKings, the sports-betting company, and ${m(t.H)} of Con Edison, New York City’s electric company.`,
         body: `<p>The market <b>${dir} ${pc(Math.abs(t.mv), 0)}</b> next month. How much does each stock move, and what happens to the client’s ${m(t.H)} in each?</p>`,
         example: twoCol('If the market falls 4%, on $3,000 in each', [['The stock’s move (β × market move), %', '1.5 × −4% = −6%', '0.5 × −4% = −2%'], ['Change in the $3,000, dollars', '$3,000 × −6% = −$180', '$3,000 × −2% = −$60']]),
         parts: [{ html: `${tbl('Betas, November 2026', ['Stock', 'β'], [{ c: ['DraftKings', BD.toFixed(2)] }, { c: ['Con Edison', BC.toFixed(2)] }])}
@@ -166,16 +179,16 @@
         sources: '<p>Betas: Yahoo Finance, “Beta (5Y Monthly),” November 4, 2026, each matching StockAnalysis.</p>',
         helpLabels: ['Show me the percentages', 'Show me every cell'] };
     }
-    if (t.id === 't3') return { title: 'The required return for each stock', place: 'The client asks what return she should expect from each stock for the risk she is taking.',
-      body: '<p>Fill in each stock’s required return from the November 2026 numbers in the table. Type each answer as a percentage.</p>',
-      example: twoCol('Treasury yield 3%, market premium 6%', [['β × market premium', '1.5 × 6% = 9%', '0.5 × 6% = 3%'], ['Required return (Treasury yield + β × market premium)', '3% + 9% = 12%', '3% + 3% = 6%']]),
+    if (t.id === 't3') return { title: 'The CAPM required return for each stock', place: 'The client asks what return she should expect from each stock for the risk she is taking.',
+      body: '<p>Use the CAPM to fill in each stock’s required return from the November 2026 numbers in the table. Type each answer as a percentage.</p>',
+      example: twoCol('Treasury yield 3%, market risk premium 6%', [['β × market risk premium', '1.5 × 6% = 9%', '0.5 × 6% = 3%'], ['Required return (Treasury yield + β × market risk premium)', '3% + 9% = 12%', '3% + 3% = 6%']]),
       parts: [{ html: '', field: 'table' }],
       table: `<div class="tw"><table class="cf"><caption>Required returns, November 2026</caption><thead><tr><th scope="col" style="text-align:left">Line</th><th scope="col">DraftKings</th><th scope="col">Con Edison</th></tr></thead><tbody>
-        <tr><td class="lbl">Treasury yield, 10 years</td><td>${pc(RF)}</td><td>${pc(RF)}</td></tr>
+        <tr><td class="lbl">Treasury yield, 10 years (the risk-free rate)</td><td>${pc(RF)}</td><td>${pc(RF)}</td></tr>
         <tr><td class="lbl">β</td><td>${BD.toFixed(2)}</td><td>${BC.toFixed(2)}</td></tr>
-        <tr><td class="lbl">Market premium</td><td>${pc(ERP)}</td><td>${pc(ERP)}</td></tr>
-        <tr><td class="lbl">β × market premium</td><td>${cell(L, 1, 'DraftKings beta times premium')}</td><td>${cell(L, 3, 'Con Edison beta times premium')}</td></tr>
-        <tr class="total hl"><td class="lbl"><b>Required return</b> (Treasury yield + β × market premium)</td><td>${cell(L, 2, 'DraftKings required return')}</td><td>${cell(L, 4, 'Con Edison required return')}</td></tr></tbody></table></div>`,
+        <tr><td class="lbl">Market risk premium</td><td>${pc(ERP)}</td><td>${pc(ERP)}</td></tr>
+        <tr><td class="lbl">β × market risk premium</td><td>${cell(L, 1, 'DraftKings beta times premium')}</td><td>${cell(L, 3, 'Con Edison beta times premium')}</td></tr>
+        <tr class="total hl"><td class="lbl"><b>Required return</b> (Treasury yield + β × market risk premium)</td><td>${cell(L, 2, 'DraftKings required return')}</td><td>${cell(L, 4, 'Con Edison required return')}</td></tr></tbody></table></div>`,
       sources: '<p>Treasury yield: US Treasury, daily par yield curve, 10-year rate on November 4, 2026. Market premium: Aswath Damodaran (NYU), implied premium at the start of 2026 (4.23%). Betas: Yahoo Finance, “Beta (5Y Monthly),” November 4, 2026.</p>',
       helpLabels: ['Show me DraftKings', 'Show me both columns'] };
     if (t.id === 't4') return { title: 'Why the risky stock sells cheaper', place: 'The client asks why anyone would buy the riskier stock at all.',
@@ -234,10 +247,10 @@
     }
     if (t.id === 't3') {
       const rr = [];
-      const bp = (y, b, ex) => judgePct(rows[y], ex, [[RF + ex, 'rf', 'That adds the Treasury yield already. This row is β × market premium only.'], [ERP, 'erp', `That is the premium alone. Multiply it by β, ${b.toFixed(2)}.`], [b * (RF + ERP), 'both', 'Multiply only the market premium by β.']], h, `${b.toFixed(2)} × ${pc(ERP)}.`);
+      const bp = (y, b, ex) => judgePct(rows[y], ex, [[RF + ex, 'rf', 'That adds the Treasury yield already. This row is β × market risk premium only.'], [ERP, 'erp', `That is the premium alone. Multiply it by β, ${b.toFixed(2)}.`], [b * (RF + ERP), 'both', 'Multiply only the market premium by β.']], h, `${b.toFixed(2)} × ${pc(ERP)}.`);
       const rq = (y, b, ex) => judgePct(rows[y], ex, [[RF + ERP, 'nobeta', `That adds the whole premium. Multiply the premium by β, ${b.toFixed(2)}, first.`], [b * ERP, 'norf', `Add the Treasury yield, ${pc(RF)}, to β × premium.`], [b * (RF + ERP), 'both', `Only the premium gets multiplied by β: ${pc(RF)} + ${b.toFixed(2)} × ${pc(ERP)}.`], [RF * b + ERP, 'swap', `Multiply the premium by β, not the Treasury yield: ${pc(RF)} + ${b.toFixed(2)} × ${pc(ERP)}.`]], h, `${pc(RF)} + ${b.toFixed(2)} × ${pc(ERP)}.`);
       rr[1] = bp(1, BD, t.dkP); rr[2] = rq(2, BD, t.dk); rr[3] = bp(3, BC, t.ceP); rr[4] = rq(4, BC, t.ce);
-      const names = ['', 'DraftKings, β × premium', 'DraftKings, required return', 'Con Edison, β × premium', 'Con Edison, required return'];
+      const names = ['', 'DraftKings, β × market risk premium', 'DraftKings, required return', 'Con Edison, β × market risk premium', 'Con Edison, required return'];
       const bad = [1, 2, 3, 4].find((y) => !rr[y].ok);
       if (bad) return { ok: false, rowRes: rr, msg: `${names[bad]}: ${rr[bad].msg}` };
       return { ok: true, rowRes: rr };
@@ -281,8 +294,8 @@
       const you = y == null ? '' : `You said ${m(y, y % 1 ? 2 : 0)} an hour, ${y >= STORE ? m(y - STORE, (y - STORE) % 1 ? 2 : 0) + ' more than' : 'less than'} the store job. `;
       return `${you}In real life the typical roofer earns <b>$26.65</b> an hour and the typical shelf stocker <b>$17.95</b>. Roofers also die on the job at a rate of <b>48.7</b> per 100,000 full-time workers, against <b>1.8</b> in retail stores. Part of the gap pays for skill. Part pays people to accept the danger and the heat.`;
     }
-    if (t.id === 't1') return `The recall cost ${m(t.one1)} with one stock but only ${m(t.ten1)} with ten. The recession cost ${m(t.one2)} either way. Owning many stocks protects you from news that hits one company, not from news that hits nearly all of them.`;
-    if (t.id === 't2') return `DraftKings tends to move about ${(BD / BC).toFixed(1)} times as far as Con Edison: ${sgn(t.dkD)} against ${sgn(t.ceD)} on the same ${m(t.H)}. That volatility is what investors want to be paid for.`;
+    if (t.id === 't1') return `The recall cost ${m(t.one1)} with one stock but only ${m(t.ten1)} with ten. The recession cost ${m(t.one2)} either way. Diversification shrank the unsystematic risk of the recall and left the systematic risk of the recession where it was.`;
+    if (t.id === 't2') return `DraftKings tends to move about ${(BD / BC).toFixed(1)} times as far as Con Edison: ${sgn(t.dkD)} against ${sgn(t.ceD)} on the same ${m(t.H)}. Diversification cannot remove that systematic risk, so investors want to be paid for it.`;
     if (t.id === 't3') return `Investors require about ${pc(t.dk)} from DraftKings and ${pc(t.ce)} from Con Edison. The gap of about ${((t.dk - t.ce) * 100).toFixed(1)} percentage points is their pay for living with DraftKings’ riskier price.`;
     if (t.id === 't4') return `DraftKings sells for ${m(t.pD, 2)} against ${m(t.pC, 2)} for Con Edison, even though both are expected to be worth ${m(t.X)}. The riskier stock sells cheaper, so a buyer who sits through the bumps earns ${pc(RD1)} if the year goes as expected, against ${pc(RC1)}.`;
   }
@@ -335,7 +348,7 @@
 
   root.DESK = {
     practiceStart: 't1',
-    app: 'finan4-u10-risk-desk', version: 3, seedVersion: 3, salt: 'rize-finan4-u10-risk:4c81d2', points: 20,
+    app: 'finan4-u10-risk-desk', version: 4, seedVersion: 3, salt: 'rize-finan4-u10-risk:4c81d2', points: 20,
     storageKey: 'rize-finan4-u10-risk-v3', filePrefix: 'RiskDesk',
     verifyUrl: 'https://rizecomputerscience.github.io/finan4-risk-desk/verify.html',
     calcPlaceholder: '4.9+1.3*4.2',
@@ -344,7 +357,7 @@
       from: 'Ingrid Sowande', fromTitle: 'portfolio manager, Fallowfield Advisors',
       dek: 'You have joined the research team at Fallowfield Advisors, a small firm that invests savings for families. Ingrid Sowande, a portfolio manager, wants you ready to explain to clients why some stocks have to promise more than others.',
       whatBox: '',
-      stepsLine: 'Ten short steps: two warm-ups with no right answers, three problems with a one-question check after each, one exam-style question, and a note to Ingrid. Each problem shows a worked example in the same table you fill in.' },
+      stepsLine: 'Eleven short steps: two warm-ups with no right answers, three problems, four quick checks, one exam-style question, and a note to Ingrid. Each problem shows a worked example in the same table you fill in.' },
     steps: STEPS, quiz: QUIZ, walk: WALK, buildTasks, taskView, judgeTask, helpText, praise, selfAnswer, selfWrong,
     note: { title: 'A note for the client', label: 'Your note to Ingrid', minWords: 30, receiptHeading: 'Note to the portfolio manager',
       prompt: 'The client asks why anyone would buy Con Edison when DraftKings is expected to earn about twice as much. Answer her in plain words. Use the two betas, say what a DraftKings buyer is being paid for, and connect it to one of your warm-up answers.' },

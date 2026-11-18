@@ -1,0 +1,67 @@
+/* The Risk Desk theme (FINAN IV Unit 10), 2026-11-18. Loaded after desk.css; changes the look only.
+   Fallowfield Advisors' portfolio screen: a ticker board in amber LEDs over the city, slate and deep teal by day, the
+   screen's own dark by night (amber leads). Red Hat Display for titles, Red Hat Text to read, Red Hat Mono for every
+   number. Steps are dashboard tabs with a status light, tables are a dense data grid. */
+@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@700;800;900&family=Red+Hat+Text:ital,wght@0,400;0,500;0,700;1,400&family=Red+Hat+Mono:wght@400;500;600&display=swap');
+:root{
+  --bg:#E8ECEF;--surface:#FFFFFF;--panel:#DCE2E7;--line:#C0CAD2;--line-strong:#5A6874;
+  --ink:#0E1922;--muted:#44525E;--brand:#00636A;--brand-ink:#FFFFFF;--brand-tint:#D8EDEE;
+  --ok:#1B6E3A;--ok-tint:#DDF0E3;--bad:#A8261E;--bad-tint:#FBE6E3;--hint:#38506A;--hint-tint:#E1E8EF;--focus:#0E1922;--hl:#FFE9A8;--ok-ink:#FFFFFF;
+  --amber:#E9A000;--led:#B57A00;--grid:rgba(14,25,34,.07);--zebra:#F3F6F8;--tab:#FFFFFF;
+  --receipt-frame:#00636A;--receipt-paper:#F3F6F8;
+  --serif:'Red Hat Text','Helvetica Neue',Arial,sans-serif;--display:'Red Hat Display','Red Hat Text',Arial,sans-serif;
+  --mono:'Red Hat Mono',ui-monospace,Menlo,monospace;}
+:root[data-theme="dark"]{
+  --bg:#0A1117;--surface:#101B23;--panel:#16242E;--line:#253A4A;--line-strong:#7189A0;
+  --ink:#E6EEF3;--muted:#A0B3C1;--brand:#FFB238;--brand-ink:#1A1203;--brand-tint:#2A2312;
+  --ok:#6BD68F;--ok-tint:#123222;--bad:#FF8A80;--bad-tint:#3E1D1D;--hint:#9FC3E0;--hint-tint:#14283A;--focus:#FFB238;--hl:#3F3312;--ok-ink:#0A1117;
+  --amber:#FFB238;--led:#FFB238;--grid:rgba(127,227,217,.06);--zebra:#132029;--tab:#101B23;}
+
+/* the screen: a faint chart grid behind everything */
+body{font-size:17.5px;background-color:var(--bg);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:44px 44px;
+  display:flex;flex-direction:column;min-height:100vh}
+header.bar{order:-2;background:var(--bg);border-bottom:1px solid var(--line);box-shadow:0 2px 0 var(--brand)}
+.brand{font-style:normal}
+.brand b{font:900 19px var(--display);letter-spacing:-.005em}
+
+/* header art: only on the first screen */
+.desk-art{order:-1;display:none;width:calc(100% - 2.2rem);max-width:calc(820px - 2.2rem);height:auto;margin:1.6rem auto 0;border-radius:6px;border:1px solid var(--line-strong)}
+body:has(#startBox) .desk-art{display:block}
+@media (max-width:600px){.desk-art{aspect-ratio:2/1;object-fit:cover;object-position:30% 0}}
+
+/* steps: dashboard tabs, each with a status light that turns on when the step is finished */
+nav.steps{padding-top:.55rem}
+nav.steps ol{gap:6px}
+nav.steps button{border-radius:5px;border:1px solid var(--line-strong);background:var(--tab);font:500 14px var(--serif);padding:.22rem .7rem .22rem .6rem}
+nav.steps button:not(.done)::before{content:"";display:inline-block;width:.5em;height:.5em;border-radius:50%;border:1.5px solid var(--line-strong);margin-right:.45em;vertical-align:.05em}
+nav.steps button.done{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+nav.steps button[aria-current="step"]{outline:2.5px solid var(--focus);outline-offset:2px}
+
+/* type */
+.kicker{font:500 15px var(--mono);font-style:normal;color:var(--muted);letter-spacing:.01em}
+h1{font:900 clamp(42px,7vw,66px)/1 var(--display);letter-spacing:-.02em;color:var(--ink)}
+h1::after{content:"";display:block;width:4.2rem;height:5px;margin-top:.8rem;background:var(--amber);border-radius:2px}
+h2{font:800 29px/1.15 var(--display);letter-spacing:-.012em}
+.dek{font-size:19px;font-style:normal;color:var(--ink);max-width:35em}
+.points{font:600 52px/1 var(--mono);color:var(--brand);letter-spacing:-.02em}
+
+/* cards: a dashboard panel with its own title strip */
+.memo{border-radius:6px;border:1px solid var(--line-strong);box-shadow:inset 0 3px 0 var(--brand)}
+.box{border-radius:6px;border:1px solid var(--line);border-left:4px solid var(--amber)}
+.stamp{border-radius:3px;font-family:var(--mono)}
+.btn,.btn-calc,.btn-quiet{border-radius:5px}
+.btn{font-weight:700}
+.choice span{border-radius:5px}
+
+/* tables: the data grid */
+table.cf{font:500 15.5px var(--mono)}
+table.cf caption{font:500 14px var(--mono);font-style:normal}
+table.cf th{font:700 13.5px var(--serif);color:var(--muted);background:var(--panel);border-bottom:1px solid var(--line-strong);padding:.4rem .6rem}
+table.cf tbody tr:nth-child(even):not(.hl) td{background:var(--zebra)}
+table.cf.ladder.filled tbody tr:nth-child(even):not(.hl) td{background:transparent}
+table.cf td.lbl,table.cf.ladder td.lbl{font:15.5px var(--serif)}
+table.cf tfoot tr.total td{border-top:2px solid var(--ink)}
+.formula{font-family:var(--mono);border-radius:5px;border-left:3px solid var(--brand)}
+.calc-strip{border-left-color:var(--amber)}
+details.example{border-radius:6px}
+@media (max-width:680px){table.cf th{padding:.35rem .25rem}}
